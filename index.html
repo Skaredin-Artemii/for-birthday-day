@@ -270,52 +270,36 @@
 
   .footer-note { text-align: center; padding: 0 20px 60px; color: #7d6a92; font-size: .85rem; }
 
-  /* ---------- ВЫЛЕТАЮЩАЯ НАДПИСЬ (НОВОЕ) ---------- */
+  /* ---------- ВЫЛЕТАЮЩАЯ НАДПИСЬ (ИСПРАВЛЕНО) ---------- */
   .birthday-popup {
     position: fixed;
-    left: 50%;
-    bottom: 20%; /* Начинает вылетать снизу */
-    transform: translateX(-50%);
-    font-size: clamp(2.5rem, 8vw, 6rem);
-    font-weight: 900;
+    left: 0;
+    top: 40%; /* Начинает появляться ближе к центру */
+    width: 100%;
     text-align: center;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 900;
     line-height: 1.1;
     color: #fff;
     text-shadow: 
-      0 0 20px #ff6b9d, 
-      0 0 40px #c77dff, 
-      0 0 60px #ffd166;
-    z-index: 400; /* Поверх всего контента */
-    pointer-events: none; /* Чтобы не блокировала клики */
+      0 0 15px #ff6b9d, 
+      0 0 30px #c77dff, 
+      0 0 50px #ffd166;
+    z-index: 9999; /* Гарантированно поверх всего */
+    pointer-events: none; /* Клики проходят сквозь текст */
     opacity: 0;
-    white-space: nowrap;
-    letter-spacing: 2px;
   }
 
   .birthday-popup.animate {
-    animation: flyUp 3.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation: flyUp 4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   }
 
   @keyframes flyUp {
-    0% { 
-      opacity: 0; 
-      transform: translate(-50%, 0) scale(0.5); 
-    }
-    15% { 
-      opacity: 1; 
-      transform: translate(-50%, -20px) scale(1.1); 
-    }
-    25% {
-      transform: translate(-50%, -20px) scale(1);
-    }
-    80% { 
-      opacity: 1; 
-      transform: translate(-50%, -150px) scale(1); 
-    }
-    100% { 
-      opacity: 0; 
-      transform: translate(-50%, -250px) scale(0.9); 
-    }
+    0%   { opacity: 0; transform: translateY(40px) scale(0.5); }
+    15%  { opacity: 1; transform: translateY(0px) scale(1.1); }
+    30%  { opacity: 1; transform: translateY(0px) scale(1); }
+    75%  { opacity: 1; transform: translateY(-100px) scale(1); }
+    100% { opacity: 0; transform: translateY(-200px) scale(0.9); }
   }
 
   /* ---------- Модалка ---------- */
@@ -370,7 +354,7 @@
 
 <canvas id="fx"></canvas>
 
-<!-- НОВЫЙ ЭЛЕМЕНТ: Вылетающая надпись -->
+<!-- ВЫЛЕТАЮЩАЯ НАДПИСЬ -->
 <div class="birthday-popup" id="popupText">С ДНЕМ РОЖДЕНИЯ,<br>ЛЮБИМАЯ!</div>
 
 <!-- ================= ЭКРАН-ПОДАРОК ================= -->
@@ -649,7 +633,7 @@ function tick() {
 tick();
 
 /* =========================================================
-   2. МУЗЫКА (Мягкая синусоида с эхом и вибрато)
+   2. МУЗЫКА
    ========================================================= */
 const MELODY = [
   ['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],
@@ -758,7 +742,7 @@ function stopMusic() {
 musicBtn.addEventListener('click', () => musicPlaying ? stopMusic() : startMusic());
 
 /* =========================================================
-   3. ИНТРО — нажатие на подарок (Мега-залп)
+   3. ИНТРО
    ========================================================= */
 const intro = document.getElementById('intro');
 intro.addEventListener('click', () => {
@@ -774,7 +758,7 @@ intro.addEventListener('click', () => {
 });
 
 /* =========================================================
-   4. СВЕЧИ (Мега-залп)
+   4. СВЕЧИ
    ========================================================= */
 const candles = document.querySelectorAll('.candle');
 const wish = document.getElementById('wish');
@@ -811,7 +795,7 @@ document.querySelectorAll('.card').forEach(card => {
 });
 
 /* =========================================================
-   6. МОДАЛКА И ПИСЬМО (Салют)
+   6. МОДАЛКА И ПИСЬМО
    ========================================================= */
 const modal = document.getElementById('modal');
 document.getElementById('letterBtn').addEventListener('click', () => {
@@ -825,21 +809,23 @@ modal.addEventListener('click', e => { if (e.target === modal) modal.classList.r
 document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
 
 /* =========================================================
-   7. ЕЩЁ КОНФЕТТИ + ВЫЛЕТАЮЩАЯ НАДПИСЬ
+   7. КНОПКА "ЕЩЕ КОНФЕТТИ" И ВЫЛЕТАЮЩАЯ НАДПИСЬ
    ========================================================= */
 const popupText = document.getElementById('popupText');
 
 document.getElementById('moreConfetti').addEventListener('click', () => {
-  // 1. Запускаем конфетти
+  // 1. Конфетти
   for (let i = 0; i < 8; i++) {
     setTimeout(() => {
         spawnConfetti(rand(W * .1, W * .9), rand(H * .1, H * .9), 400);
     }, i * 120);
   }
 
-  // 2. Запускаем анимацию надписи
+  // 2. Надпись (надежный перезапуск анимации)
+  popupText.style.animation = 'none'; // Сбрасываем анимацию
+  popupText.offsetHeight;             // Принудительно перерисовываем элемент
+  popupText.style.animation = null;   // Возвращаем CSS
   popupText.classList.remove('animate');
-  void popupText.offsetWidth; // Этот трюк перезапускает анимацию при повторном клике
   popupText.classList.add('animate');
 });
 
