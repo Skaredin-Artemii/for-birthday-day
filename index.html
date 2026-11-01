@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#160d24">
-<!-- ✏️ Поменяй имя в title и в <h1> ниже -->
 <title>С Днём Рождения, Полечка 💕</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -192,7 +191,7 @@
   .card-back h4 { font-size: 1.02rem; margin-bottom: 8px; color: #ffd6e8; }
   .card-back p { font-size: .88rem; line-height: 1.45; color: #f3e8ff; }
 
-  /* ---------- Полароиды ---------- */
+  /* ---------- Полароиды (Фото) ---------- */
   .gallery {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -216,6 +215,32 @@
     display: block; padding: 12px 4px 16px; text-align: center;
     color: #5a4a6a; font-size: .88rem;
     font-family: Georgia, 'Times New Roman', serif; font-style: italic;
+  }
+
+  /* ---------- ВИДЕОГАЛЕРЕЯ ---------- */
+  .video-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px; max-width: 1000px; margin: 30px auto 0;
+  }
+  .video-card {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.3);
+  }
+  .video-card video {
+    width: 100%;
+    border-radius: 8px;
+    outline: none;
+    background: #000;
+  }
+  .video-card p {
+    margin-top: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffd166;
   }
 
   /* ---------- Финал ---------- */
@@ -290,7 +315,7 @@
 <!-- ================= ЭКРАН-ПОДАРОК ================= -->
 <div class="intro" id="intro">
   <div class="gift">🎁</div>
-  <p class="intro-text">Нажми на подарок</p>
+  <p class="intro-text">Нажми на подарок, Полечка</p>
 </div>
 
 <button class="music-btn" id="musicBtn" title="Музыка">🔇</button>
@@ -301,8 +326,7 @@
   <!-- ----- HERO ----- -->
   <section class="hero">
     <p class="eyebrow">Сегодня твой день</p>
-    <!-- ✏️ Имя здесь -->
-    <h1>С Днём Рождения,<br><span class="name">Аня</span>!</h1>
+    <h1>С Днём Рождения,<br><span class="name">Полечка</span>!</h1>
     <p class="sub">Я приготовил кое-что особенное. Листай вниз 💝</p>
     <div class="scroll-hint">↓</div>
   </section>
@@ -326,16 +350,15 @@
       <div class="plate"></div>
     </div>
 
-    <p class="wish" id="wish">✨ Желание загадано — пусть обязательно сбудется! ✨</p>
+    <p class="wish" id="wish">✨ Полечка, желание загадано — пусть обязательно сбудется! ✨</p>
   </section>
 
   <!-- ----- КАРТОЧКИ ----- -->
   <section class="reveal">
-    <h2>Шесть причин, почему я тебя люблю</h2>
+    <h2>Шесть причин, почему я люблю Полечку</h2>
     <p class="hint">Нажми на карточку, чтобы открыть</p>
 
     <div class="cards">
-      <!-- ✏️ Тексты на обороте можно поменять -->
       <div class="card"><div class="card-inner">
         <div class="card-face card-front"><div class="emoji">😊</div><div class="tap">Открыть</div></div>
         <div class="card-face card-back"><h4>Твоя улыбка</h4><p>Она освещает всё вокруг. Даже самый хмурый день становится теплее, когда ты улыбаешься.</p></div>
@@ -358,13 +381,48 @@
 
       <div class="card"><div class="card-inner">
         <div class="card-face card-front"><div class="emoji">🤗</div><div class="tap">Открыть</div></div>
-        <div class="card-face card-back"><h4>Твоя поддержка</h4><p>С тобой любой день проходит легче. Ты — мой тыл и моя опора.</p></div>
+        <div class="card-face card-back"><h4>Твоя поддержка</h4><p>С тобой любой день проходит легче. Ты — мой стимул и моя опора.</p></div>
       </div></div>
 
       <div class="card"><div class="card-inner">
         <div class="card-face card-front"><div class="emoji">💖</div><div class="tap">Открыть</div></div>
-        <div class="card-face card-back"><h4>Ты — это ты</h4><p>Никаких «но». Просто ты. И этого достаточно, чтобы я был счастлив.</p></div>
+        <div class="card-face card-back"><h4>Ты — это ты</h4><p>Никаких «но». Просто ты, моя Полечка. И этого достаточно, чтобы я был счастлив.</p></div>
       </div></div>
+    </div>
+  </section>
+
+  <!-- ----- ВИДЕОПОЗДРАВЛЕНИЯ ----- -->
+  <section class="reveal">
+    <h2>Видеопоздравления от подруг</h2>
+    <p class="hint">Специально для тебя 💖</p>
+
+    <div class="video-gallery">
+      <!-- ВИДЕО 1 -->
+      <div class="video-card">
+        <!-- ✏️ Замени video1.mp4 на реальное имя файла (латиницей, без пробелов!) -->
+        <video controls preload="metadata" playsinline>
+          <source src="video1.mp4" type="video/mp4">
+          Твой браузер не поддерживает видео.
+        </video>
+      </div>
+
+      <!-- ВИДЕО 2 -->
+      <div class="video-card">
+        <!-- ✏️ Замени video2.mp4 на реальное имя файла -->
+        <video controls preload="metadata" playsinline>
+          <source src="video2.mp4" type="video/mp4">
+          Твой браузер не поддерживает видео.
+        </video>
+      </div>
+
+      <!-- ВИДЕО 3 -->
+      <div class="video-card">
+        <!-- ✏️ Замени video3.mp4 на реальное имя файла -->
+        <video controls preload="metadata" playsinline>
+          <source src="video3.mp4" type="video/mp4">
+          Твой браузер не поддерживает видео.
+        </video>
+      </div>
     </div>
   </section>
 
@@ -373,22 +431,24 @@
     <h2>Наши моменты</h2>
     <p class="hint">Самые тёплые воспоминания</p>
 
-    <!-- ✏️ ЧТОБЫ ДОБАВИТЬ ФОТО:
-         замени <div class="ph">📸</div> на
-         <img class="ph" src="photo1.jpg" alt="">
-         и положи картинки рядом с index.html -->
     <div class="gallery">
+      <!-- ✏️ ФОТО 1 -->
       <div class="polaroid">
-        <div class="ph">📸</div>
-        <span>Наш первый день</span>
+        <!-- Чтобы добавить фото, замени строку ниже на: <img class="ph" src="photo1.jpg" alt="Фото 1"> -->
+        <img class="ph" src="photo1.jpg" alt="Фото 1">📸</div>
+        <span>Это мы очень давно</span>
       </div>
+      <!-- ✏️ ФОТО 2 -->
       <div class="polaroid">
-        <div class="ph">📸</div>
-        <span>Тот самый вечер</span>
+        <!-- Замени на: <img class="ph" src="photo2.jpg" alt="Фото 2"> -->
+        <img class="ph" src="photo2.jpg" alt="Фото 2">📸</div>
+        <span>Это мы давненько</span>
       </div>
+      <!-- ✏️ ФОТО 3 -->
       <div class="polaroid">
-        <div class="ph">📸</div>
-        <span>Просто мы</span>
+        <!-- Замени на: <img class="ph" src="photo3.jpg" alt="Фото 3"> -->
+        <img class="ph" src="photo3.jpg" alt="Фото 3">📸</div>
+        <span>А это мы сейчас</span>
       </div>
     </div>
   </section>
@@ -399,24 +459,35 @@
     <button class="btn ghost" id="moreConfetti">Ещё конфетти 🎉</button>
   </section>
 
-  <p class="footer-note">Сделано с любовью ❤️</p>
+  <p class="footer-note">Сделано с любовью специально для Полечки ❤️</p>
 </main>
 
 <!-- ================= МОДАЛКА С ПИСЬМОМ ================= -->
 <div class="modal" id="modal">
   <div class="modal-box">
     <button class="close" id="closeModal" aria-label="Закрыть">×</button>
-    <h3>Моей любимой</h3>
-    <!-- ✏️ Здесь можно написать что-то своё — это самое важное -->
-    <p>Любимая моя,</p>
-    <p>Сегодня твой день, и я хочу, чтобы ты знала: ты — самое лучшее, что случилось со мной.
-       Каждый день рядом с тобой — это подарок, даже если мы просто молчим, смотрим кино
-       или спорим, что заказать на ужин.</p>
-    <p>Спасибо, что ты есть. Спасибо за твоё тепло, за твоё терпение, за твои объятия,
-       в которых мир становится на паузу.</p>
-    <p>Я хочу, чтобы этот год принёс тебе всё, о чём ты мечтаешь. А я буду рядом —
-       помогать, поддерживать, смешить и любить.</p>
-    <p class="sign">С днём рождения, моя девочка 💕</p>
+    <h3>Моей любимой Полечке</h3>
+    <p>Любимая моя девочка, Полечка, Полюшечка,</p>
+    <p>Сегодня, 17 лет назад, на свет появилась прекрасная девочка, и маленький Тёмака
+      еще даже не подозревал, что этот день станет одним из самых счастливых в его жизни, ведь
+      родилась та, ради которой он будет готов на любые свершения и трудности, та, которая будет мотивировать
+      развиваться и двигаться дальше ради общего благополучия.</p>
+    <p>Солнышко, я счастлив, что однажды наши судьбы встретились, и надеюсь, что и дальше наши жизненные
+      линии будут одним целым. Я благодарен тебе за каждую секундочку, проведенную вместе, за каждое мгновение,
+      пережитое вместе, за каждую трудность, пройденную вместе, за все эти 3 прекрасные года! Ты - самая лучшая,
+      самая красивая, самая заботливая, самая нежная, самая душевная, самая юморная девушка на этом свете!</p>
+    <p>В этот день я хочу пожелать тебе, в первую очередь, наикрепчайшего здоровья, как ментального,
+      так и физического, чтобы тебе хватило сил на воплощение в жизнь всех твоих планов, пусть тебе встретятся
+      на жизненном пути такие люди, которым ты сможешь доверять, на которых ты сможешь положиться и с которыми
+      тебе будет приятно проводить время, пускай твои родные будут всегда рядом, и отношения с ними будут
+      всё теплеть и теплеть, ну и конечно, пусть тебя не обходит стороной удача, хоть я и уверен в том, что ты
+      справишься со всеми трудностями экзаменов и поступления, но она тебе точно понадобится! А за позитив,
+      яркие моменты, запоминающиеся события, ментальном благополучии и свершение желаний в ответе буду я!</p>
+    <p>Я хочу, чтобы и дальше мы были с тобою вместе, чтобы этот год прошел гладко, и чтобы мы всегда засыпали
+      и просыпались вместе, вместе выполняли домашние дела, вместе проводили каждый вечер, были рядом в любой момент,
+      и довели наши отношения до прекрасного логического конца!</p>
+    <p>Заечка, я тебя безумно сильно тебя люблю!</p>
+    <p class="sign">С днём рождения, моя Полечка 💕</p>
   </div>
 </div>
 
@@ -444,7 +515,7 @@ const rand = (a, b) => a + Math.random() * (b - a);
 function spawnConfetti(x, y, n) {
   for (let i = 0; i < n; i++) {
     const angle = rand(0, Math.PI * 2);
-    const speed = rand(3, 11);
+    const speed = rand(3, 12);
     confetti.push({
       x, y,
       vx: Math.cos(angle) * speed * rand(.5, 1),
@@ -531,7 +602,7 @@ function tick() {
 tick();
 
 /* =========================================================
-   2. МУЗЫКА (Happy Birthday через Web Audio, без файлов)
+   2. МУЗЫКА (Happy Birthday через Web Audio)
    ========================================================= */
 const MELODY = [
   ['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],
@@ -602,8 +673,8 @@ intro.addEventListener('click', () => {
   document.body.classList.add('started');
   setTimeout(() => intro.remove(), 900);
 
-  spawnConfetti(W / 2, H * .45, 150);
-  startMusic(); // автозапуск музыки после клика (браузеры это разрешают)
+  spawnConfetti(W / 2, H * .45, 400);
+  startMusic(); 
 });
 
 /* =========================================================
@@ -627,8 +698,8 @@ candles.forEach(c => {
     if (blown === candles.length) {
       wish.classList.add('show');
       const r = c.getBoundingClientRect();
-      spawnConfetti(r.left + r.width / 2, r.top, 70);
-      setTimeout(() => spawnConfetti(W / 2, H * .38, 130), 250);
+      spawnConfetti(r.left + r.width / 2, r.top, 150);
+      setTimeout(() => spawnConfetti(W / 2, H * .38, 300), 250);
     }
   });
 });
@@ -641,20 +712,26 @@ document.querySelectorAll('.card').forEach(card => {
 });
 
 /* =========================================================
-   6. МОДАЛКА
+   6. МОДАЛКА И ПИСЬМО
    ========================================================= */
 const modal = document.getElementById('modal');
-document.getElementById('letterBtn').addEventListener('click', () => modal.classList.add('open'));
+document.getElementById('letterBtn').addEventListener('click', () => {
+  modal.classList.add('open');
+  spawnConfetti(W / 2, H * .8, 300);
+});
+
 document.getElementById('closeModal').addEventListener('click', () => modal.classList.remove('open'));
 modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
 
 /* =========================================================
-   7. ЕЩЁ КОНФЕТТИ
+   7. ЕЩЁ КОНФЕТТИ (МОЩНЫЙ ЗАЛП)
    ========================================================= */
 document.getElementById('moreConfetti').addEventListener('click', () => {
-  for (let i = 0; i < 3; i++) {
-    setTimeout(() => spawnConfetti(rand(W * .1, W * .9), rand(H * .25, H * .7), 80), i * 160);
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
+        spawnConfetti(rand(W * .1, W * .9), rand(H * .2, H * .8), 250);
+    }, i * 150);
   }
 });
 
