@@ -399,25 +399,20 @@
     <div class="video-gallery">
       <!-- ВИДЕО 1 -->
       <div class="video-card">
-        <!-- ✏️ Замени video1.mp4 на реальное имя файла (латиницей, без пробелов!) -->
         <video controls preload="metadata" playsinline>
           <source src="video1.mp4" type="video/mp4">
           Твой браузер не поддерживает видео.
         </video>
       </div>
-
       <!-- ВИДЕО 2 -->
       <div class="video-card">
-        <!-- ✏️ Замени video2.mp4 на реальное имя файла -->
         <video controls preload="metadata" playsinline>
           <source src="video2.mp4" type="video/mp4">
           Твой браузер не поддерживает видео.
         </video>
       </div>
-
       <!-- ВИДЕО 3 -->
       <div class="video-card">
-        <!-- ✏️ Замени video3.mp4 на реальное имя файла -->
         <video controls preload="metadata" playsinline>
           <source src="video3.mp4" type="video/mp4">
           Твой браузер не поддерживает видео.
@@ -426,28 +421,27 @@
     </div>
   </section>
 
-  <!-- ----- ФОТО ----- -->
+  <!-- ----- ФОТО (ИСПРАВЛЕНО) ----- -->
   <section class="reveal">
     <h2>Наши моменты</h2>
     <p class="hint">Самые тёплые воспоминания</p>
 
     <div class="gallery">
-      <!-- ✏️ ФОТО 1 -->
+      <!-- ФОТО 1 -->
       <div class="polaroid">
-        <!-- Чтобы добавить фото, замени строку ниже на: <img class="ph" src="photo1.jpg" alt="Фото 1"> -->
-        <img class="ph" src="photo1.jpg" alt="Фото 1">📸</div>
+        <img class="ph" src="photo1.jpg" alt="Фото 1">
         <span>Это мы очень давно</span>
       </div>
-      <!-- ✏️ ФОТО 2 -->
+      
+      <!-- ФОТО 2 -->
       <div class="polaroid">
-        <!-- Замени на: <img class="ph" src="photo2.jpg" alt="Фото 2"> -->
-        <img class="ph" src="photo2.jpg" alt="Фото 2">📸</div>
+        <img class="ph" src="photo2.jpg" alt="Фото 2">
         <span>Это мы давненько</span>
       </div>
-      <!-- ✏️ ФОТО 3 -->
+      
+      <!-- ФОТО 3 -->
       <div class="polaroid">
-        <!-- Замени на: <img class="ph" src="photo3.jpg" alt="Фото 3"> -->
-        <img class="ph" src="photo3.jpg" alt="Фото 3">📸</div>
+        <img class="ph" src="photo3.jpg" alt="Фото 3">
         <span>А это мы сейчас</span>
       </div>
     </div>
@@ -515,7 +509,7 @@ const rand = (a, b) => a + Math.random() * (b - a);
 function spawnConfetti(x, y, n) {
   for (let i = 0; i < n; i++) {
     const angle = rand(0, Math.PI * 2);
-    const speed = rand(3, 12);
+    const speed = rand(3, 12); 
     confetti.push({
       x, y,
       vx: Math.cos(angle) * speed * rand(.5, 1),
@@ -602,7 +596,7 @@ function tick() {
 tick();
 
 /* =========================================================
-   2. МУЗЫКА (Happy Birthday через Web Audio)
+   2. МУЗЫКА (Обновлено: мягкая синусоида с эхом и вибрато)
    ========================================================= */
 const MELODY = [
   ['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],
@@ -611,21 +605,69 @@ const MELODY = [
   ['F5',.75],['F5',.25],['E5',1],['C5',1],['D5',1],['C5',2]
 ];
 const NOTES = { G4:392, A4:440, B4:493.88, C5:523.25, D5:587.33, E5:659.25, F5:698.46, G5:783.99 };
-const BEAT = 0.42;
+const BEAT = 0.45; // Немного замедлили для мелодичности
 
-let actx = null, musicPlaying = false, musicTimer = null, activeNodes = [];
+let actx = null, masterGain = null, delayNode = null, musicPlaying = false, musicTimer = null, activeNodes = [];
 
-function playNote(freq, when, dur, vol = 0.11) {
+function initAudio() {
+  if (actx) return;
+  actx = new (window.AudioContext || window.webkitAudioContext)();
+
+  masterGain = actx.createGain();
+  masterGain.gain.value = 0.4; // Общая громкость
+  masterGain.connect(actx.destination);
+
+  // Создаем эффект реверба (эха) для объема
+  delayNode = actx.createDelay();
+  delayNode.delayTime.value = 0.3;
+  const feedback = actx.createGain();
+  feedback.gain.value = 0.4; // Эхо плавно затухает
+  const wet = actx.createGain();
+  wet.gain.value = 0.3; // Громкость эха
+
+  delayNode.connect(feedback);
+  feedback.connect(delayNode);
+  delayNode.connect(wet);
+  wet.connect(masterGain);
+}
+
+function playNote(freq, when, dur) {
   const o = actx.createOscillator();
   const g = actx.createGain();
-  o.type = 'triangle';
+
+  o.type = 'sine'; // Мягкая синусоида вместо резкого треугольника
   o.frequency.value = freq;
-  g.gain.setValueAtTime(0.0001, when);
-  g.gain.exponentialRampToValueAtTime(vol, when + 0.03);
-  g.gain.exponentialRampToValueAtTime(0.0001, when + dur);
-  o.connect(g).connect(actx.destination);
+
+  // Плавная атака и долгое затухание (как у колокольчика)
+  g.gain.setValueAtTime(0, when);
+  g.gain.linearRampToValueAtTime(0.15, when + 0.08);
+  g.gain.exponentialRampToValueAtTime(0.001, when + dur + 0.8);
+
+  // Легкое вибрато для "живости" звука
+  const lfo = actx.createOscillator();
+  const lfoGain = actx.createGain();
+  lfo.frequency.value = 5; // Частота вибрато
+  lfoGain.gain.value = 2; // Глубина вибрато
+  lfo.connect(lfoGain);
+  lfoGain.connect(o.frequency);
+
+  // Фильтр, убирающий лишние высокие частоты
+  const filter = actx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 1800;
+
+  o.connect(g);
+  g.connect(filter);
+  
+  filter.connect(masterGain); // Сухой звук
+  filter.connect(delayNode);  // Звук с эхом
+
   o.start(when);
-  o.stop(when + dur + 0.05);
+  lfo.start(when);
+
+  o.stop(when + dur + 1);
+  lfo.stop(when + dur + 1);
+
   activeNodes.push(o);
   o.onended = () => { activeNodes = activeNodes.filter(n => n !== o); };
 }
@@ -636,17 +678,18 @@ function scheduleMelody() {
   let total = 0;
   for (const [note, d] of MELODY) {
     const dur = d * BEAT;
-    playNote(NOTES[note], t, dur * .95);
+    // Даем ноте звучать чуть дольше, чтобы был плавный переход (legato)
+    playNote(NOTES[note], t, dur * 1.1);
     t += dur;
     total += dur;
   }
-  musicTimer = setTimeout(scheduleMelody, total * 1000 + 900);
+  musicTimer = setTimeout(scheduleMelody, (total + 2) * 1000); // Пауза 2 секунды
 }
 
 const musicBtn = document.getElementById('musicBtn');
 
 function startMusic() {
-  if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+  initAudio();
   if (actx.state === 'suspended') actx.resume();
   musicPlaying = true;
   musicBtn.textContent = '🔊';
@@ -658,7 +701,9 @@ function stopMusic() {
   musicPlaying = false;
   musicBtn.textContent = '🔇';
   clearTimeout(musicTimer);
-  activeNodes.forEach(n => { try { n.stop(); } catch (e) {} });
+  activeNodes.forEach(n => { 
+    try { n.stop(); n.disconnect(); } catch (e) {} 
+  });
   activeNodes = [];
 }
 
