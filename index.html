@@ -191,7 +191,7 @@
   .card-back h4 { font-size: 1.02rem; margin-bottom: 8px; color: #ffd6e8; }
   .card-back p { font-size: .88rem; line-height: 1.45; color: #f3e8ff; }
 
-  /* ---------- Полароиды (СДЕЛАНО БОЛЬШЕ И БЕЗ ОБРЕЗКИ) ---------- */
+  /* ---------- Полароиды ---------- */
   .gallery {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
@@ -270,6 +270,54 @@
 
   .footer-note { text-align: center; padding: 0 20px 60px; color: #7d6a92; font-size: .85rem; }
 
+  /* ---------- ВЫЛЕТАЮЩАЯ НАДПИСЬ (НОВОЕ) ---------- */
+  .birthday-popup {
+    position: fixed;
+    left: 50%;
+    bottom: 20%; /* Начинает вылетать снизу */
+    transform: translateX(-50%);
+    font-size: clamp(2.5rem, 8vw, 6rem);
+    font-weight: 900;
+    text-align: center;
+    line-height: 1.1;
+    color: #fff;
+    text-shadow: 
+      0 0 20px #ff6b9d, 
+      0 0 40px #c77dff, 
+      0 0 60px #ffd166;
+    z-index: 400; /* Поверх всего контента */
+    pointer-events: none; /* Чтобы не блокировала клики */
+    opacity: 0;
+    white-space: nowrap;
+    letter-spacing: 2px;
+  }
+
+  .birthday-popup.animate {
+    animation: flyUp 3.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+
+  @keyframes flyUp {
+    0% { 
+      opacity: 0; 
+      transform: translate(-50%, 0) scale(0.5); 
+    }
+    15% { 
+      opacity: 1; 
+      transform: translate(-50%, -20px) scale(1.1); 
+    }
+    25% {
+      transform: translate(-50%, -20px) scale(1);
+    }
+    80% { 
+      opacity: 1; 
+      transform: translate(-50%, -150px) scale(1); 
+    }
+    100% { 
+      opacity: 0; 
+      transform: translate(-50%, -250px) scale(0.9); 
+    }
+  }
+
   /* ---------- Модалка ---------- */
   .modal {
     position: fixed; inset: 0; z-index: 200;
@@ -321,6 +369,9 @@
 <body>
 
 <canvas id="fx"></canvas>
+
+<!-- НОВЫЙ ЭЛЕМЕНТ: Вылетающая надпись -->
+<div class="birthday-popup" id="popupText">С ДНЕМ РОЖДЕНИЯ,<br>ЛЮБИМАЯ!</div>
 
 <!-- ================= ЭКРАН-ПОДАРОК ================= -->
 <div class="intro" id="intro">
@@ -428,25 +479,20 @@
     </div>
   </section>
 
-  <!-- ----- ФОТО (ИСПРАВЛЕНО) ----- -->
+  <!-- ----- ФОТО ----- -->
   <section class="reveal">
     <h2>Наши моменты</h2>
     <p class="hint">Самые тёплые воспоминания</p>
 
     <div class="gallery">
-      <!-- ФОТО 1 -->
       <div class="polaroid">
         <img class="ph" src="photo1.jpg" alt="Фото 1">
         <span>Это мы очень давно</span>
       </div>
-      
-      <!-- ФОТО 2 -->
       <div class="polaroid">
         <img class="ph" src="photo2.jpg" alt="Фото 2">
         <span>Это мы давненько</span>
       </div>
-      
-      <!-- ФОТО 3 -->
       <div class="polaroid">
         <img class="ph" src="photo3.jpg" alt="Фото 3">
         <span>А это мы сейчас</span>
@@ -779,14 +825,22 @@ modal.addEventListener('click', e => { if (e.target === modal) modal.classList.r
 document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
 
 /* =========================================================
-   7. ЕЩЁ КОНФЕТТИ (МЕГА-ЗАЛП)
+   7. ЕЩЁ КОНФЕТТИ + ВЫЛЕТАЮЩАЯ НАДПИСЬ
    ========================================================= */
+const popupText = document.getElementById('popupText');
+
 document.getElementById('moreConfetti').addEventListener('click', () => {
+  // 1. Запускаем конфетти
   for (let i = 0; i < 8; i++) {
     setTimeout(() => {
         spawnConfetti(rand(W * .1, W * .9), rand(H * .1, H * .9), 400);
     }, i * 120);
   }
+
+  // 2. Запускаем анимацию надписи
+  popupText.classList.remove('animate');
+  void popupText.offsetWidth; // Этот трюк перезапускает анимацию при повторном клике
+  popupText.classList.add('animate');
 });
 
 /* =========================================================
