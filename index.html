@@ -199,6 +199,7 @@
     max-width: 900px; 
     margin: 40px auto 0;
     padding: 0 10px;
+    align-items: start;
   }
   .polaroid {
     background: #fdf7ff; 
@@ -208,18 +209,18 @@
     transform: rotate(-2deg); 
     transition: transform .3s;
     width: 100%;
-    overflow: hidden; /* Защита от вылезания картинок */
+    overflow: hidden;
   }
   .polaroid:nth-child(2) { transform: rotate(1.6deg); }
   .polaroid:nth-child(3) { transform: rotate(-1deg); }
   .polaroid:hover { transform: rotate(0) scale(1.03); }
   
-  /* Жесткие ограничения для картинок */
   .ph {
     display: block;
     width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover; /* Картинка заполняет квадрат, обрезая лишнее */
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
     border-radius: 3px;
     background: #eee;
   }
@@ -251,12 +252,6 @@
     border-radius: 8px;
     outline: none;
     background: #000;
-  }
-  .video-card p {
-    margin-top: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #ffd166;
   }
 
   /* ---------- Финал ---------- */
@@ -528,7 +523,7 @@ function spawnConfetti(x, y, n) {
       vx: Math.cos(angle) * speed * rand(.5, 1),
       vy: Math.sin(angle) * speed - rand(2, 6),
       g: rand(.18, .3),
-      w: rand(5, 11), h: rand(5, 11),
+      w: rand(6, 15), h: rand(6, 15), // Увеличенный размер
       color: COLORS[(Math.random() * COLORS.length) | 0],
       rot: rand(0, Math.PI * 2),
       vr: rand(-.25, .25),
@@ -609,7 +604,7 @@ function tick() {
 tick();
 
 /* =========================================================
-   2. МУЗЫКА (Обновлено: мягкая синусоида с эхом и вибрато)
+   2. МУЗЫКА (Мягкая синусоида с эхом и вибрато)
    ========================================================= */
 const MELODY = [
   ['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],
@@ -618,7 +613,7 @@ const MELODY = [
   ['F5',.75],['F5',.25],['E5',1],['C5',1],['D5',1],['C5',2]
 ];
 const NOTES = { G4:392, A4:440, B4:493.88, C5:523.25, D5:587.33, E5:659.25, F5:698.46, G5:783.99 };
-const BEAT = 0.45; // Немного замедлили для мелодичности
+const BEAT = 0.45;
 
 let actx = null, masterGain = null, delayNode = null, musicPlaying = false, musicTimer = null, activeNodes = [];
 
@@ -627,16 +622,15 @@ function initAudio() {
   actx = new (window.AudioContext || window.webkitAudioContext)();
 
   masterGain = actx.createGain();
-  masterGain.gain.value = 0.4; // Общая громкость
+  masterGain.gain.value = 0.4; 
   masterGain.connect(actx.destination);
 
-  // Создаем эффект реверба (эха) для объема
   delayNode = actx.createDelay();
   delayNode.delayTime.value = 0.3;
   const feedback = actx.createGain();
-  feedback.gain.value = 0.4; // Эхо плавно затухает
+  feedback.gain.value = 0.4;
   const wet = actx.createGain();
-  wet.gain.value = 0.3; // Громкость эха
+  wet.gain.value = 0.3;
 
   delayNode.connect(feedback);
   feedback.connect(delayNode);
@@ -648,23 +642,20 @@ function playNote(freq, when, dur) {
   const o = actx.createOscillator();
   const g = actx.createGain();
 
-  o.type = 'sine'; // Мягкая синусоида вместо резкого треугольника
+  o.type = 'sine'; 
   o.frequency.value = freq;
 
-  // Плавная атака и долгое затухание (как у колокольчика)
   g.gain.setValueAtTime(0, when);
   g.gain.linearRampToValueAtTime(0.15, when + 0.08);
   g.gain.exponentialRampToValueAtTime(0.001, when + dur + 0.8);
 
-  // Легкое вибрато для "живости" звука
   const lfo = actx.createOscillator();
   const lfoGain = actx.createGain();
-  lfo.frequency.value = 5; // Частота вибрато
-  lfoGain.gain.value = 2; // Глубина вибрато
+  lfo.frequency.value = 5; 
+  lfoGain.gain.value = 2; 
   lfo.connect(lfoGain);
   lfoGain.connect(o.frequency);
 
-  // Фильтр, убирающий лишние высокие частоты
   const filter = actx.createBiquadFilter();
   filter.type = 'lowpass';
   filter.frequency.value = 1800;
@@ -672,8 +663,8 @@ function playNote(freq, when, dur) {
   o.connect(g);
   g.connect(filter);
   
-  filter.connect(masterGain); // Сухой звук
-  filter.connect(delayNode);  // Звук с эхом
+  filter.connect(masterGain); 
+  filter.connect(delayNode);  
 
   o.start(when);
   lfo.start(when);
@@ -691,12 +682,11 @@ function scheduleMelody() {
   let total = 0;
   for (const [note, d] of MELODY) {
     const dur = d * BEAT;
-    // Даем ноте звучать чуть дольше, чтобы был плавный переход (legato)
     playNote(NOTES[note], t, dur * 1.1);
     t += dur;
     total += dur;
   }
-  musicTimer = setTimeout(scheduleMelody, (total + 2) * 1000); // Пауза 2 секунды
+  musicTimer = setTimeout(scheduleMelody, (total + 2) * 1000); 
 }
 
 const musicBtn = document.getElementById('musicBtn');
@@ -723,7 +713,7 @@ function stopMusic() {
 musicBtn.addEventListener('click', () => musicPlaying ? stopMusic() : startMusic());
 
 /* =========================================================
-   3. ИНТРО — нажатие на подарок
+   3. ИНТРО — нажатие на подарок (Мега-залп)
    ========================================================= */
 const intro = document.getElementById('intro');
 intro.addEventListener('click', () => {
@@ -731,12 +721,16 @@ intro.addEventListener('click', () => {
   document.body.classList.add('started');
   setTimeout(() => intro.remove(), 900);
 
-  spawnConfetti(W / 2, H * .45, 400);
+  // Много конфетти при входе
+  spawnConfetti(W / 2, H * .45, 800);
+  setTimeout(() => spawnConfetti(W * 0.2, H * .6, 400), 200);
+  setTimeout(() => spawnConfetti(W * 0.8, H * .6, 400), 400);
+  
   startMusic(); 
 });
 
 /* =========================================================
-   4. СВЕЧИ
+   4. СВЕЧИ (Мега-залп)
    ========================================================= */
 const candles = document.querySelectorAll('.candle');
 const wish = document.getElementById('wish');
@@ -756,8 +750,12 @@ candles.forEach(c => {
     if (blown === candles.length) {
       wish.classList.add('show');
       const r = c.getBoundingClientRect();
-      spawnConfetti(r.left + r.width / 2, r.top, 150);
-      setTimeout(() => spawnConfetti(W / 2, H * .38, 300), 250);
+      
+      // Много конфетти после свечей
+      spawnConfetti(r.left + r.width / 2, r.top, 300);
+      setTimeout(() => spawnConfetti(W / 2, H * .38, 800), 200);
+      setTimeout(() => spawnConfetti(W * .25, H * .6, 500), 500);
+      setTimeout(() => spawnConfetti(W * .75, H * .6, 500), 700);
     }
   });
 });
@@ -770,12 +768,13 @@ document.querySelectorAll('.card').forEach(card => {
 });
 
 /* =========================================================
-   6. МОДАЛКА И ПИСЬМО
+   6. МОДАЛКА И ПИСЬМО (Салют)
    ========================================================= */
 const modal = document.getElementById('modal');
 document.getElementById('letterBtn').addEventListener('click', () => {
   modal.classList.add('open');
-  spawnConfetti(W / 2, H * .8, 300);
+  spawnConfetti(W / 2, H * .8, 600);
+  setTimeout(() => spawnConfetti(W / 2, H * .5, 400), 200);
 });
 
 document.getElementById('closeModal').addEventListener('click', () => modal.classList.remove('open'));
@@ -783,13 +782,14 @@ modal.addEventListener('click', e => { if (e.target === modal) modal.classList.r
 document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
 
 /* =========================================================
-   7. ЕЩЁ КОНФЕТТИ (МОЩНЫЙ ЗАЛП)
+   7. ЕЩЁ КОНФЕТТИ (МЕГА-ЗАЛП)
    ========================================================= */
 document.getElementById('moreConfetti').addEventListener('click', () => {
-  for (let i = 0; i < 5; i++) {
+  // 8 волн конфетти
+  for (let i = 0; i < 8; i++) {
     setTimeout(() => {
-        spawnConfetti(rand(W * .1, W * .9), rand(H * .2, H * .8), 250);
-    }, i * 150);
+        spawnConfetti(rand(W * .1, W * .9), rand(H * .1, H * .9), 400);
+    }, i * 120);
   }
 });
 
